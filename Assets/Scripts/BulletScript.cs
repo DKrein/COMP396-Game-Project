@@ -13,4 +13,19 @@ public class BulletScript : MonoBehaviour {
 	{
 		Destroy(gameObject);
 	}
+
+    void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
+    {
+        Vector3 syncPosition = Vector3.zero;
+        if (stream.isWriting)
+        {
+            syncPosition = transform.GetComponent<Rigidbody>().position;
+            stream.Serialize(ref syncPosition);
+        }
+        else
+        {
+            stream.Serialize(ref syncPosition);
+            transform.GetComponent<Rigidbody>().position = syncPosition;
+        }
+    }
 }

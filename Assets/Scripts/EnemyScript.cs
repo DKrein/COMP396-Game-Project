@@ -30,7 +30,7 @@ public class EnemyScript : MonoBehaviour {
 	
 	protected void Initialize () 
 	{
-		objPlayer = GameObject.FindGameObjectWithTag("Player");
+		
 		if (enemyTagPoints != "") {
 			pointsEnemyWalk = GameObject.FindGameObjectsWithTag (enemyTagPoints);
 		}
@@ -44,6 +44,11 @@ public class EnemyScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
+        objPlayer = GameObject.FindGameObjectWithTag("Player");
+        if (objPlayer == null)
+        {
+            objPlayer = GameObject.FindGameObjectWithTag("DummyPlayer");
+        }
 		
 		switch (curState)
 		{
@@ -147,8 +152,21 @@ public class EnemyScript : MonoBehaviour {
 			curState = FSMState.Look;
 		}
 		
-	}	
-	
-	
+	}
+
+    void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
+    {
+        Vector3 syncPosition = Vector3.zero;
+        if (stream.isWriting)
+        {
+            syncPosition = transform.GetComponent<Rigidbody>().position;
+            stream.Serialize(ref syncPosition);
+        }
+        else
+        {
+            stream.Serialize(ref syncPosition);
+            transform.GetComponent<Rigidbody>().position = syncPosition;
+        }
+    }
 	
 }

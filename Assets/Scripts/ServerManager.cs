@@ -14,7 +14,7 @@ public class ServerManager : MonoBehaviour {
 
     void Start()
     {
-        MasterServer.ipAddress = "192.168.1.100";
+        //MasterServer.ipAddress = "192.168.1.100";
     }
 	
 	void OnServerInitialized()
